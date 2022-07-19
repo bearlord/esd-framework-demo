@@ -1,8 +1,7 @@
 {
     "require": {
         "php": ">=7.1",
-        "bearlord/esd-framework": "dev-master",
-        "php-amqplib/php-amqplib": "^3.1"
+        "bearlord/esd-framework": "dev-master"
     },
     "autoload": {
         "psr-4": {
