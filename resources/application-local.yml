@@ -1,0 +1,123 @@
+reload:
+  enable: true
+
+blade:
+  namespace:
+    app:
+      path: ${ROOT_DIR}/src/Views
+
+redis:
+  default:
+    host: 'localhost'
+    database: 1
+
+session:
+  timeout: 3600
+  database: 2
+  sessionStorageClass: 'ESD\Plugins\Session\RedisSessionStorage'
+  sessionUsage: 'cookie'
+  #  headerIdentity: 'sessionId'
+  #  domain: '192.168.108.130'
+  path: '/'
+  #  httpOnly: true
+  secure: false
+
+amqp:
+  default:
+    hosts:
+      - host: 127.0.0.1
+        port: 5672
+        user: guest
+        password: guest
+    poolMaxNumber: 2
+
+
+yii:
+  components:
+    log:
+      traceLevel: 0
+      flushInterval: 1000
+      targets:
+        - class: 'ESD\Yii\Log\FileTarget'
+          exportInterval: 1000
+          levels:
+            - error
+            - warning
+            - info
+            - trace
+            - profile
+
+    cache:
+      class: 'ESD\Yii\Redis\Cache'
+      redis:
+        database: 3
+
+    formatter:
+      sizeFormatBase: 1000
+
+    admin:
+      class: 'ESD\Yii\Web\User'
+      identityClass: 'app\Model\MySQL\Admin'
+      enableAutoLogin: true
+      enableSession: true
+      identityCookie:
+        name: _identity-admin
+        httpOnly: true
+
+    clickhouse:
+      class: 'ESD\Yii\Clickhouse\Connection'
+      dsn: 'host=localhost;port=8123;database=default'
+      username: web
+      password: 123
+      enableSchemaCache: true
+      schemaCache: cache,
+      schemaCacheDuration: 86400
+
+    user:
+      class:  'ESD\Yii\Web\User'
+      identityClass:  'App\Models\User'
+      enableAutoLogin:  true
+
+  language: 'zh-CN'
+
+  debug: true
+
+  db:
+    default:
+      dsn: 'mysql:host=192.168.108.131;dbname=iot_water'
+      username: 'root'
+      password: '123456'
+      tablePrefix: 'n_'
+      poolMaxNumber: 3
+      enableSchemaCache: false
+      schemaCacheDuration: 3600
+      schemaCache: cache
+    taos:
+      dsn: 'taos:host=127.0.0.1;dbname=demo'
+      username: 'root'
+      password: 'taosdata'
+      tablePrefix: 'n_'
+      poolMaxNumber: 3
+      enableSchemaCache: false
+      schemaCacheDuration: 3600
+      schemaCache: cache
+    taosw:
+      dsn: 'taos:host=127.0.0.1;dbname=demo'
+      username: 'root'
+      password: 'taosdata'
+      tablePrefix: 'n_'
+      poolMaxNumber: 3
+      enableSchemaCache: false
+      schemaCacheDuration: 3600
+      schemaCache: cache
+
+#  mongodb:
+#    default:
+#      dsn: 'mongodb://localhost:27017/esd'
+#      options:
+#        -
+
+  queue:
+    default:
+      class: 'ESD\Yii\Queue\Drivers\Redis\Queue'
+      minIntervalTime: 5

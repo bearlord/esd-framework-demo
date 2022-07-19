@@ -1,0 +1,16 @@
+<component name="ProjectDictionaryState">
+  <dictionary name="bearlord">
+    <words>
+      <w>connack</w>
+      <w>groupid</w>
+      <w>pingresp</w>
+      <w>puback</w>
+      <w>pubcomp</w>
+      <w>pubrec</w>
+      <w>pubrel</w>
+      <w>suback</w>
+      <w>taosdb</w>
+      <w>unsuback</w>
+    </words>
+  </dictionary>
+</component>
