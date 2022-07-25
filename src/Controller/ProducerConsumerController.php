@@ -8,10 +8,11 @@ use ESD\Plugins\Amqp\Consumer;
 use ESD\Plugins\Amqp\Message\ProducerMessage;
 use ESD\Plugins\Amqp\Producer;
 use ESD\Plugins\AnnotationsScan\ScanClass;
+use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 use ESD\Plugins\EasyRoute\Annotation\RestController;
 use ESD\Plugins\EasyRoute\Annotation\RequestMapping;
 use ESD\Plugins\EasyRoute\Annotation\GetMapping;
-use ESD\Server\Coroutine\Server;
+use ESD\Core\Server\Server;
 
 /**
  * @RestController("producer-consumer")
@@ -29,6 +30,24 @@ class ProducerConsumerController extends GoController
      * @var Consumer
      */
     protected $consumer;
+
+    /**
+     * @GetMapping("producer");
+     * @ResponseBody()
+     * @throws \Throwable
+     */
+    public function actionProduce()
+    {
+        $this->producer->produce(new DeviceRechargeProducer(mt_rand()));
+
+        Server::$instance->getLog()->debug("publish");
+
+//        for ($i = 1; $i <= 1; $i++) {
+//            $this->producer->produce(new DeviceRechargeProducer($i));
+//        }
+//        $this->response->withContent("success")->end();
+
+    }
 
     /**
      * @GetMapping("test")
@@ -50,19 +69,6 @@ class ProducerConsumerController extends GoController
 
 
         var_dump($r);
-    }
-
-    /**
-     * @GetMapping("producer");
-     * @throws \Throwable
-     */
-    public function actionProduce()
-    {
-        for ($i = 1; $i <= 2; $i++) {
-            $this->producer->produce(new DeviceRechargeProducer($i));
-        }
-        $this->response->withContent("success")->end();
-
     }
 
     /**

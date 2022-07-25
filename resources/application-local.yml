@@ -24,12 +24,14 @@ session:
 
 amqp:
   default:
-    hosts:
-      - host: 127.0.0.1
-        port: 5672
-        user: guest
-        password: guest
+    host: 127.0.0.1
+    port: 5672
+    user: guest
+    password: guest
+    keepalive: true
     poolMaxNumber: 2
+#    concurrent:
+#      limit: 3
 
 
 yii:
