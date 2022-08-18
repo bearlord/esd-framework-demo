@@ -17,11 +17,13 @@ use ESD\Plugins\Actor\ActorMessage;
 use ESD\Plugins\Amqp\GetAmqp;
 use ESD\Plugins\EasyRoute\Annotation\GetMapping;
 use ESD\Plugins\EasyRoute\Annotation\PostMapping;
+use ESD\Plugins\EasyRoute\Annotation\RequestRawXml;
 use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 use ESD\Plugins\EasyRoute\Annotation\RestController;
 use DI\Annotation\Inject;
 use ESD\Plugins\Blade\Blade;
 use ESD\Plugins\Redis\GetRedis;
+use ESD\Utils\ArrayToXml;
 use ESD\Yii\Db\Connection;
 use ESD\Yii\Db\Expression;
 use ESD\Yii\Db\Query;
@@ -190,6 +192,32 @@ class Index extends GoController
                 'customer_password_hash' => mt_rand(100, 999),
             ])
             ->execute();
+    }
+
+
+    /**
+     * @GetMapping("xml")
+     * @ResponseBody("application/xml;charset=UTF-8")
+     * @return string
+     */
+    public function actionXml()
+    {
+
+        $array = [
+            'name' => '张三',
+            'age' => 19,
+            'books' => [
+                [
+                    'name' => '三国演义',
+                    'price' => 20.15,
+                ],
+                [
+                    'name' => '三国演义',
+                    'price' => 20.15,
+                ]
+            ]
+        ];
+        return ArrayToXml::convert($array);
     }
 
 }

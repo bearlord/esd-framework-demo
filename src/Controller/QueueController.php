@@ -9,12 +9,14 @@ use App\Model\UploadFileProcess;
 use ESD\Go\GoController;
 use ESD\Plugins\EasyRoute\Annotation\GetMapping;
 use ESD\Plugins\EasyRoute\Annotation\PostMapping;
+use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 use ESD\Plugins\EasyRoute\Annotation\RestController;
 use ESD\Yii\Helpers\FileHelper;
 use ESD\Yii\Helpers\Json;
 use ESD\Yii\I18n\Formatter;
 use ESD\Yii\Plugin\Queue\GetQueue;
 use ESD\Yii\Web\UploadedFile;
+use Swoole\Coroutine\Channel;
 
 /**
  * @RestController("queue")
@@ -28,24 +30,32 @@ class QueueController extends GoController
 
     /**
      * @GetMapping("test")
+     * @ResponseBody()
      * @throws \Exception
      */
     public function actionTest()
     {
         $queue = $this->queue();
-
-        //添加 事件处理完 事件
-        $queue->on(\ESD\Yii\Queue\Queue::EVENT_AFTER_EXEC, function ($data) {
-            printf("%s\n", $data);
-        });
-
         //队列添加任务
-        $queue->push(new BaseJob([
-            'orderSn' => date("YmdHis")
+        $orderSn =  date("YmdHis") . mt_rand(100, 999);
+        $id  = $queue->push(new BaseJob([
+            'orderSn' => $orderSn
         ]));
 
-        //事件处理完，会有trigger触发EVENT_AFTER_EXEC事件
-        //$queue->trigger(\ESD\Yii\Queue\Queue::EVENT_AFTER_EXEC);
+        return [$orderSn, $id];
+
+//        $chan = new Channel(1);
+//        goWithContext(function () use ($chan) {
+//            $queue = $this->queue();
+//            //队列添加任务
+//            $orderSn =  date("YmdHis") . mt_rand(100, 999);
+//            $id  = $queue->push(new BaseJob([
+//                'orderSn' => $orderSn
+//            ]));
+//            $chan->push([$orderSn, $id]);
+//        });
+//
+//        return $chan->pop();
     }
 
     /**
