@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Actor\CaijiActor;
 use App\Actor\ManActor;
 use App\Actor\WomanActor;
 use ESD\Core\Server\Server;
 use ESD\Plugins\Actor\Actor;
 use ESD\Plugins\Actor\ActorManager;
+use ESD\Plugins\Actor\ActorMessage;
 use ESD\Plugins\EasyRoute\Annotation\RequestMapping;
 use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 use ESD\Plugins\EasyRoute\Annotation\RestController;
@@ -36,6 +38,7 @@ class ActorController extends \ESD\Go\GoController
         ]);
         $this->response->withStatus(200)->end();
     }
+
     /**
      * @RequestMapping("borrow-money")
      * @return void
@@ -45,19 +48,15 @@ class ActorController extends \ESD\Go\GoController
     public function actionBorrowMoney()
     {
         $lucy = Actor::getProxy('lucy', false);
-        $lily = Actor::getProxy('lily', false);
         $lilei = Actor::getProxy('lilei', false);
 
         $money1 = 1;
-        $money2 = 2;
 
         $m1 = $lucy->outMoney($money1);
-//        $m2 = $lily->outMoney($money2);
-        $lilei->inMoney($money1);
-//        $lilei->inMoney($money2);
+        $lilei->inMoney($m1);
 
         Server::$instance->getLog()->debug(sprintf("lilei余额：%f", $lilei->getMoney()));
-
+        $this->response->withStatus(200)->end();
     }
 
     /**
@@ -69,10 +68,23 @@ class ActorController extends \ESD\Go\GoController
     public function actionTrans()
     {
         $lucy = Actor::getProxy('lucy', false);
+        $lily = Actor::getProxy('lily', false);
         $lilei = Actor::getProxy('lilei', false);
-        $m1 = $lucy->outMoney(1);
-        $lilei->inMoney($m1);
-        Server::$instance->getLog()->debug(sprintf("lucy余额： %f, lilei余额：%f", $lucy->getMoney(), $lilei->getMoney()));
+
+        $lilei->startTransaction(function () use ($lilei, $lucy, $lily) {
+            $money1 = 1;
+            $money2 = 2;
+
+            $m1 = $lucy->outMoney($money1);
+            $m2 = $lily->outMoney($money2);
+            $lilei->inMoney($m1);
+            $lilei->inMoney($m2);
+        });
+        goWithContext(function () use ($lilei) {
+            Server::$instance->getLog()->debug(sprintf("lilei余额：%f", $lilei->getMoney()));
+        });
+
+        $this->response->withStatus(200)->end();
     }
 
     /**
@@ -86,7 +98,7 @@ class ActorController extends \ESD\Go\GoController
         $lucy = Actor::getProxy('lucy', false);
         $lilei = Actor::getProxy('lilei', false);
 
-        $lilei->startTransaction(function () use ($lucy, $lilei){
+        $lilei->startTransaction(function () use ($lucy, $lilei) {
             $m1 = $lucy->outMoney(1);
             $lilei->inMoney($m1);
             Server::$instance->getLog()->debug(sprintf("lilei余额：%f", $lilei->getMoney()));
@@ -115,25 +127,58 @@ class ActorController extends \ESD\Go\GoController
         ];
     }
 
-
     /**
-     * @RequestMapping("pay-back")
-     * @return void
+     * @RequestMapping("data")
+     * @ResponseBody()
+     * @return array
+     * @throws \ESD\Plugins\Actor\ActorException
      */
-    public function actionPayBack()
+    public function actionData()
     {
+        $name = $this->request->input('name');
+        $actor = Actor::getProxy($name, false);
+        $money = $actor->getMoney();
 
+        return [
+            'money' => $money
+        ];
     }
 
+    /**
+     * @RequestMapping("send")
+     * @return void
+     * @throws \ESD\Plugins\Actor\ActorException
+     */
+    public function actionSend()
+    {
+        $lilei = Actor::getProxy('lilei');
+        $lilei->sendMessageToActor(new ActorMessage('晚上看电影?？', time(), 'lilei', 'lucy'), 'lucy');
+        $lilei->sendMessageToActor(new ActorMessage('晚上看电影?？', time(), 'lilei', 'lily'), 'lily');
+    }
 
     /**
-     * 删除角色
-     * @RequestMapping("delete")
-     * @return void
+     * @RequestMapping("create-caiji")
      */
-    public function actionDelete()
+    public function actionCreateCaiji()
     {
+        for ($i = 0; $i <= 9; $i++) {
+            Actor::create(CaijiActor::class, 'caiji-' . $i, 5);
+        }
+    }
 
+    /**
+     * @RequestMapping("do-caiji")
+     */
+    public function actionDoCaiji()
+    {
+        for ($i = 1; $i < 1000; $i++) {
+            $url = sprintf("https://www.baidu.com/s?wd=%s", $i);
+            goWithContext(function () use ($i, $url) {
+                $actorName = "caiji-" . ($i % 10);
+                $actor = Actor::getProxy($actorName, true);
+                $actor->doCaiji($url);
+            });
+        }
     }
 
 }
