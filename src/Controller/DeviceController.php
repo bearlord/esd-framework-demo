@@ -11,7 +11,7 @@ use ESD\Plugins\Redis\GetRedis;
 use ESD\Yii\Helpers\Json;
 
 /**
- * @RestController("device")
+ * //@RestController("device")
  *
  * Class DeviceController
  * @package App\Controller

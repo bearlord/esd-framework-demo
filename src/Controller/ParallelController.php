@@ -11,7 +11,7 @@ use ESD\Snowflake\IdGenerator;
 use ESD\Snowflake\MetaGenerator\RandomMilliSecondMetaGenerator;
 
 /**
- * @RestController("parallel")
+ * //@RestController("parallel")
  */
 class ParallelController extends \ESD\Go\GoController
 {

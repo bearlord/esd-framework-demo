@@ -15,7 +15,7 @@ use ESD\Yii\Yii;
 use PDO;
 
 /**
- * @RestController("taos")
+ * //@RestController("taos")
  */
 class TaosController extends GoController
 {

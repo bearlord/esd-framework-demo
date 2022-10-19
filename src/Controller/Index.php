@@ -17,6 +17,7 @@ use ESD\Plugins\Actor\ActorMessage;
 use ESD\Plugins\Amqp\GetAmqp;
 use ESD\Plugins\EasyRoute\Annotation\GetMapping;
 use ESD\Plugins\EasyRoute\Annotation\PostMapping;
+use ESD\Plugins\EasyRoute\Annotation\RequestMapping;
 use ESD\Plugins\EasyRoute\Annotation\RequestRawXml;
 use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 use ESD\Plugins\EasyRoute\Annotation\RestController;
@@ -32,7 +33,7 @@ use ESD\Yii\Plugin\Pdo\PdoPools;
 use ESD\Yii\Yii;
 
 /**
- * @RestController()
+ * //@RestController()
  * Class Index
  * @package ESD\Plugins\EasyRoute
  */
@@ -174,7 +175,6 @@ class Index extends GoController
                 $exception->getTrace()
             ];
         }
-
     }
 
     /**

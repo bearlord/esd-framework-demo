@@ -6,13 +6,12 @@ namespace App\Actor;
 
 use ESD\Plugins\Actor\Actor;
 use ESD\Plugins\Actor\ActorMessage;
+use ESD\Server\Coroutine\Server;
 
 class WomanActor extends Actor
 {
 
     protected $data;
-
-    protected $money;
 
     /**
      * @inheritDoc
@@ -20,7 +19,6 @@ class WomanActor extends Actor
     public function initData($data)
     {
         $this->data = $data;
-        $this->money = $data['money'];
     }
 
     public function getData()
@@ -30,18 +28,18 @@ class WomanActor extends Actor
 
     public function getMoney()
     {
-        return $this->money;
+        return $this->data['money'];
     }
 
     public function outMoney($value)
     {
-        $this->money = $this->money - $value;
+        $this->data['money'] = $this->data['money'] - $value;
         return $value;
     }
 
     public function inMoney($value)
     {
-        $this->money = $this->money + $value;
+        $this->data['money'] = $this->data['money'] + $value;
         return $value;
     }
 
@@ -50,9 +48,20 @@ class WomanActor extends Actor
      */
     protected function handleMessage(ActorMessage $message)
     {
-        printf("Woman message: ");
-        var_dump($message);
-        var_dump($message->getData());
+        Server::$instance->getLog()->critical(sprintf("to: %s, form: %s, message: %s",
+            $message->getTo(),
+            $message->getFrom(),
+            $message->getData()
+        ));
+
+        if ($message->getTo() == 'lucy') {
+            Actor::getProxy($message->getFrom())->sendMessage(new ActorMessage( '好呀~~', $message->getMsgId(), "lucy", "lilei"));
+        }
+
+        if ($message->getTo() == 'lily') {
+            Actor::getProxy($message->getFrom())->sendMessage(new ActorMessage( '不去！！', $message->getMsgId(), "lily", "lilei"));
+        }
+
         return 1;
 
     }

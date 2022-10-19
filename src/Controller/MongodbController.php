@@ -9,7 +9,7 @@ use ESD\Plugins\EasyRoute\Annotation\GetMapping;
 use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 
 /**
- * @RestController
+ * //@RestController
  */
 class MongodbController extends GoController
 {

@@ -19,7 +19,7 @@ use ESD\Plugins\MQTT\Protocol\Types;
 use ESD\Plugins\Redis\GetRedis;
 
 /**
- * @MqttController(portNames={"mqtt"});
+ * //@MqttController(portNames={"mqtt"});
  */
 class MqttServiceController extends GoController
 {

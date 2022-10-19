@@ -11,7 +11,7 @@ use ESD\Plugins\Redis\GetRedis;
 use ESD\Server\Co\Server;
 
 /**
- * @WsController()
+ * @WsController(portNames={"websocket"})
  * Class WebSocket
  * @package app\Controller
  */

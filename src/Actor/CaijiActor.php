@@ -29,8 +29,15 @@ class CaijiActor extends Actor
         goWithContext(function () use ($url){
             $content = file_get_contents($url);
 //            $this->data['content']['url']['length'] = strlen($content);
-            Server::$instance->getLog()->critical(sprintf("采集器 %s 正在采集 %s, 长度: %d", $this->name, $url, strlen($content)));
-            sleep(0.02);
+            Server::$instance->getLog()->critical(sprintf("采集器 %s 正在采集 %s, 长度: %d",
+                $this->name,
+                $url,
+                strlen($content)
+            ));
+            Server::$instance->getLog()->critical(sprintf("内容摘要: %s",
+                substr($content, mt_rand(1000, 1200), 60)
+            ));
+            \Swoole\Coroutine\System::sleep(0.02);
         });
     }
 

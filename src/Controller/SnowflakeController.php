@@ -10,12 +10,12 @@ use ESD\Snowflake\IdGenerator;
 use ESD\Snowflake\MetaGenerator\RandomMilliSecondMetaGenerator;
 
 /**
- * @RestController("snowflake")
+ * //@RestController("snowflake")
  */
 class SnowflakeController extends GoController
 {
     /**
-     * @GetMapping("test1")
+     * //@GetMapping("test1")
      */
     public function actionIndex()
     {

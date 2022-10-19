@@ -9,6 +9,7 @@ use ESD\Core\Server\Server;
 use ESD\Plugins\Actor\Actor;
 use ESD\Plugins\Actor\ActorManager;
 use ESD\Plugins\Actor\ActorMessage;
+use ESD\Plugins\EasyRoute\Annotation\AnyMapping;
 use ESD\Plugins\EasyRoute\Annotation\RequestMapping;
 use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 use ESD\Plugins\EasyRoute\Annotation\RestController;
@@ -161,7 +162,7 @@ class ActorController extends \ESD\Go\GoController
      */
     public function actionCreateCaiji()
     {
-        for ($i = 0; $i <= 9; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             Actor::create(CaijiActor::class, 'caiji-' . $i, 5);
         }
     }
@@ -174,10 +175,24 @@ class ActorController extends \ESD\Go\GoController
         for ($i = 1; $i < 1000; $i++) {
             $url = sprintf("https://www.baidu.com/s?wd=%s", $i);
             goWithContext(function () use ($i, $url) {
-                $actorName = "caiji-" . ($i % 10);
+                $actorName = "caiji-" . ($i % 20);
                 $actor = Actor::getProxy($actorName, true);
                 $actor->doCaiji($url);
             });
+        }
+    }
+
+    /**
+     * @RequestMapping("create-more")
+     * @return void
+     * @throws \ESD\Plugins\Actor\ActorException
+     */
+    public function actionCreateMore()
+    {
+        for ($i = 1; $i <= 2000; $i++) {
+            Actor::create(WomanActor::class, "actor-" . $i, [
+                'age' => mt_rand(10, 99)
+            ]);
         }
     }
 

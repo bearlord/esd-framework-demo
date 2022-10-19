@@ -73,7 +73,7 @@ class AmqpController extends GoController
             $channel = $amqp->channel();
             $channel->queue_declare('hello', false, false, false, false);
 
-            for( $i = 1; $i <= 1; $i++ ) {
+            for( $i = 1; $i <= 10; $i++ ) {
                 $content = sprintf("Hello world! - %s - %d", date("Y-m-d H:i:s"), $i);
                 $msg = new AMQPMessage($content);
                 $channel->basic_publish($msg, '', 'hello');

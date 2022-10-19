@@ -26,9 +26,7 @@ class Application
     {
         $goApp = new GoApplication();
 
-        $actorConfig = new ActorConfig();
-        $actorConfig->setActorWorkerCount(20);
-        $goApp->addPlugin(new ActorPlugin($actorConfig));
+        $goApp->addPlugin(new ActorPlugin());
 
 //        $goApp->addPlugin(new ScheduledPlugin());
         $goApp->addPlugin(new PdoPlugin());

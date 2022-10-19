@@ -19,7 +19,7 @@ use ESD\Yii\Web\UploadedFile;
 use Swoole\Coroutine\Channel;
 
 /**
- * @RestController("queue")
+ * //@RestController("queue")
  * Class Queue
  * @package App\Controller
  */
