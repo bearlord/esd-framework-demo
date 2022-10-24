@@ -7,18 +7,22 @@ use App\Actor\ManActor;
 use App\Actor\WomanActor;
 use ESD\Core\Server\Server;
 use ESD\Plugins\Actor\Actor;
+use ESD\Plugins\Actor\ActorException;
 use ESD\Plugins\Actor\ActorManager;
 use ESD\Plugins\Actor\ActorMessage;
+use ESD\Plugins\Actor\Multicast\GetMulticast;
 use ESD\Plugins\EasyRoute\Annotation\AnyMapping;
 use ESD\Plugins\EasyRoute\Annotation\RequestMapping;
 use ESD\Plugins\EasyRoute\Annotation\ResponseBody;
 use ESD\Plugins\EasyRoute\Annotation\RestController;
+use ESD\Plugins\ProcessRPC\ProcessRPCException;
 
 /**
  * @RestController("/actor")
  */
 class ActorController extends \ESD\Go\GoController
 {
+    use GetMulticast;
 
     /**
      * 创建角色
@@ -196,4 +200,46 @@ class ActorController extends \ESD\Go\GoController
         }
     }
 
+    /**
+     * @RequestMapping("subscribe")
+     * @return void
+     * @throws ActorException
+     * @throws ProcessRPCException
+     */
+    public function actionSubscribe()
+    {
+        $channel = 'welcome';
+        $channel2 = 'welcome2';
+        $this->subscribe($channel, 'lucy');
+        $this->subscribe($channel, 'lily');
+        $this->subscribe($channel, 'lilei');
+        $this->subscribe($channel2, 'lucy');
+        $this->subscribe($channel2, 'lilei');
+
+        //10秒后，lucy取消订阅 channel
+        addTimerAfter(10 * 1000, function() use ($channel, $channel2){
+            $this->unsubscribe($channel, 'lucy');
+        });
+        //20秒后，lilei取消所有的订阅
+        addTimerAfter(20 * 1000, function() use ($channel, $channel2){
+            $this->unsubscribeAll('lilei');
+        });
+        //30秒后，删除 channel
+        addTimerAfter(30 * 1000, function() use ($channel, $channel2) {
+            $this->deleteChannel($channel);
+        });
+    }
+
+    /**
+     * @RequestMapping("publish")
+     * @return void
+     * @throws ProcessRPCException
+     */
+    public function actionPublish()
+    {
+        $channel = 'welcome';
+        $channel2 = 'welcome2';
+        $this->publish($channel, "欢迎~~~");
+        $this->publish($channel2, "逛街去~~~");
+    }
 }
